@@ -1,5 +1,5 @@
-
 namespace SOA_example;
+
 using SOA_example.Routes;
 
 public class Program
@@ -47,6 +47,9 @@ public class Program
         })
         .WithName("GetWeatherForecast")
         .WithOpenApi();
+
+        // Start the NATS listener
+        LoginRoutes.StartListener();
 
         //use my login endpoints
         app.MapLoginRoutes();

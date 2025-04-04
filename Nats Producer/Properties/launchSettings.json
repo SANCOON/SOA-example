@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Nats Producer": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

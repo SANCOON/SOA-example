@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: producer-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: producer-job
+    spec:
+      containers:
+        - name: what-to-name-the-docker-container
+          image: natsproducer #this is the image we're pulling
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Never

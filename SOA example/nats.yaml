@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nats-config
+data:
+  nats.conf: |
+    max_payload: 8MB
+    http_port: 8222
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats
+spec:
+  selector:
+    matchLabels:
+      app: nats
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nats
+    spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: nats-config
+      containers:
+        - name: nats
+          image: nats
+          command:
+            - /nats-server
+            - --config
+            - /etc/nats-config/nats.conf
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/nats-config
+          ports:
+            - containerPort: 4222
+              name: nats
+            - containerPort: 8222
+              name: monitoring
+---
+
