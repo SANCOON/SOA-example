@@ -13,7 +13,7 @@ on:
 jobs:
   build_backend:
     #define what platform you want to build it on
-    runs-on: windows=latest
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET Core
