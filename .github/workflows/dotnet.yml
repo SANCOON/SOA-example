@@ -1,28 +1,46 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: .NET
+name: Build ASP.NET APP
 
+#when to trigger this action: do it on pushes and pull requests to main
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
+  build_backend:
+    #define what platform you want to build it on
+    runs-on: windows=latest
     steps:
     - uses: actions/checkout@v4
-    - name: Setup .NET
+    - name: Setup .NET Core
+    #some predefined action provided by github
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
+        dotnet-version: '8.0.x'
+      #build all the sub applications
+    - name: Build all
+      run: dotnet build --configuration Release
+      #run tests
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      #publish SOA example
+    - name: Publish SOA example
+      run: dotnet publish "SOA example\SOA example.csproj" -c Release -o "${{env.DOTNET_ROOT}}\Artifacts\SOA example\"
+    #upload artefacts for deployment
+    - name: upload for deployment
+      uses: actions/upload-artifact@v4
+      with:
+        name: SOA example
+        path: ${{env.DOTNET_ROOT}}\Artifacts\SOA example
+    #publish NATS producer
+    - name: Publish NATS producer
+      run: dotnet publish "Nats Producer\Nats Producer.csproj" -c Release -o "${{env.DOTNET_ROOT}}\Artifacts\Nats Producer\"
+    - name: upload nats producer for deployment
+      uses: actions/upload-artifact@v4
+      with:
+        name: Nats producer
+        path: ${{env.DOTNET_ROOT}}\Artifacts\Nats Producer
